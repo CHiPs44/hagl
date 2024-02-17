@@ -74,11 +74,11 @@ hagl_get_glyph(void const *_surface, wchar_t code, hagl_color_t color, hagl_bitm
     return 0;
 }
 
-color_t *
+hagl_color_t *
 hagl_get_char_buffer(void const *_surface)
 {
     const hagl_surface_t *surface = _surface;
-    static color_t *buffer = NULL;
+    static hagl_color_t *buffer = NULL;
     static size_t buffer_size = 0;
     size_t size = 16 * 16 * surface->depth / 2;
 
@@ -86,7 +86,7 @@ hagl_get_char_buffer(void const *_surface)
         if (buffer != NULL) {
             free(buffer);
         }
-        buffer = (color_t *)malloc(size);
+        buffer = (hagl_color_t *)malloc(size);
         buffer_size = size;
     }
 
@@ -102,8 +102,8 @@ hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, hagl_c
     hagl_bitmap_t bitmap;
     fontx_glyph_t glyph;
     bool reverse;
-    color_t background_color;
-    color_t foreground_color;
+    hagl_color_t background_color;
+    hagl_color_t foreground_color;
 
     status = fontx_glyph(&glyph, code, style->font);
     if (0 != status) {
@@ -151,7 +151,7 @@ hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, hagl_c
 }
 
 uint8_t
-hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, color_t color, const uint8_t *font)
+hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, hagl_color_t color, const uint8_t *font)
 {
     hagl_char_style_t style = {
         .font = font,
@@ -194,7 +194,7 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, h
  * continue from the next line.
  */
 uint16_t
-hagl_put_text(void const *_surface, const wchar_t *str, int16_t x0, int16_t y0, color_t color, const unsigned char *font)
+hagl_put_text(void const *_surface, const wchar_t *str, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font)
 {
     hagl_char_style_t style = {
         .font = font,
