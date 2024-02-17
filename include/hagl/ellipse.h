@@ -3,7 +3,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ extern "C" {
  * @param color
  */
 void
-hagl_draw_ellipse(void const *_surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
+hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, hagl_color_t color);
 
 /**
  * Draw a filled ellipse
@@ -72,7 +72,7 @@ hagl_draw_ellipse(void const *_surface, int16_t x0, int16_t y0, int16_t a, int16
  * @param color
  */
 void
-hagl_fill_ellipse(void const *_surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color);
+hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, hagl_color_t color);
 
 #ifdef __cplusplus
 }

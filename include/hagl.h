@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -61,6 +61,11 @@ extern "C" {
 #endif /* __cplusplus */
 
 #define ABS(x)  ((x) > 0 ? (x) : -(x))
+
+/* If you want to use bigger fonts than 6x9 you need to define this. */
+#ifndef HAGL_CHAR_BUFFER_SIZE
+#define HAGL_CHAR_BUFFER_SIZE    (6 * 9 * 2)
+#endif
 
 #define HAGL_OK                  (0)
 #define HAGL_ERR_GENERAL         (1)

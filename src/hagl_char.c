@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ SPDX-License-Identifier: MIT
 #include "fontx.h"
 
 uint8_t
-hagl_get_glyph(void const *_surface, wchar_t code, color_t color, hagl_bitmap_t *bitmap, const uint8_t *font)
+hagl_get_glyph(void const *_surface, wchar_t code, hagl_color_t color, hagl_bitmap_t *bitmap, const uint8_t *font)
 {
     const hagl_surface_t *surface = _surface;
     uint8_t status, set;
@@ -57,7 +57,7 @@ hagl_get_glyph(void const *_surface, wchar_t code, color_t color, hagl_bitmap_t 
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
 
-    color_t *ptr = (color_t *) bitmap->buffer;
+    hagl_color_t *ptr = (hagl_color_t *) bitmap->buffer;
 
     for (uint8_t y = 0; y < glyph.height; y++) {
         for (uint8_t x = 0; x < glyph.width; x++) {
@@ -94,11 +94,11 @@ hagl_get_char_buffer(void const *_surface)
 }
 
 uint8_t
-hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style)
+hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, hagl_color_t color, const uint8_t *font)
 {
+    static uint8_t *buffer = NULL;
     const hagl_surface_t *surface = _surface;
     uint8_t set, status;
-    color_t *buffer = hagl_get_char_buffer(_surface);
     hagl_bitmap_t bitmap;
     fontx_glyph_t glyph;
     bool reverse;
@@ -110,16 +110,15 @@ hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0,
         return 0;
     }
 
-    bitmap.width  = glyph.width;
-    bitmap.height = glyph.height;
-    bitmap.depth  = surface->depth;
-    bitmap_init(&bitmap, (uint8_t *)buffer);
+    /* Initialize character buffer when first called. */
+    if (NULL == buffer) {
+        buffer = calloc(HAGL_CHAR_BUFFER_SIZE, sizeof(uint8_t));
+    }
 
-    reverse          = style->mode & HAGL_CHAR_MODE_REVERSE     ? true : false;
-    foreground_color = reverse ? style->background_color : style->foreground_color;
-    background_color = reverse ? style->foreground_color : style->background_color;
+    hagl_bitmap_init(&bitmap,  glyph.width, glyph.height, surface->depth, (uint8_t *)buffer);
 
-    color_t *ptr = (color_t *) bitmap.buffer;
+    hagl_color_t *ptr = (hagl_color_t *) bitmap.buffer;
+
     for (uint8_t y = 0; y < glyph.height; y++) {
         for (uint8_t x = 0; x < glyph.width; x++) {
             set = *(glyph.buffer + x / 8) & (0x80 >> (x % 8));
@@ -164,7 +163,7 @@ hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, color_
 }
 
 uint16_t
-hagl_put_text_styled(void const *_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style)
+hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font)
 {
     wchar_t temp;
     uint8_t status;

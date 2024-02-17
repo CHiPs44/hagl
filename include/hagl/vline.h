@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,7 @@ extern "C" {
  * @param color
  */
 void
-hagl_draw_vline_xyh(void const *_surface, int16_t x0, int16_t y0, uint16_t height, color_t color);
+hagl_draw_vline_xyh(void const *surface, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color);
 
 /**
  * Draw a vertical line
@@ -70,7 +70,7 @@ hagl_draw_vline_xyh(void const *_surface, int16_t x0, int16_t y0, uint16_t heigh
  * @param color
  */
 static inline void
-hagl_draw_vline_xyy(void const *_surface, int16_t x0, int16_t y0, int16_t y1, color_t color)
+hagl_draw_vline_xyy(void const *surface, int16_t x0, int16_t y0, int16_t y1, hagl_color_t color)
 {
     hagl_draw_vline_xyh(_surface, x0, y0, abs(y1 - y0) + 1, color);
 }
@@ -87,7 +87,7 @@ hagl_draw_vline_xyy(void const *_surface, int16_t x0, int16_t y0, int16_t y1, co
  * @param color
  */
 static inline void
-hagl_draw_vline(void const *_surface, int16_t x0, int16_t y0, uint16_t height, color_t color)
+hagl_draw_vline(void const *surface, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color)
 {
     hagl_draw_vline_xyh(_surface, x0, y0, height, color);
 }

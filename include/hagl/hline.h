@@ -3,7 +3,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -58,7 +58,7 @@ extern "C" {
  */
 
 void
-hagl_draw_hline_xyw(void const *_surface, int16_t x0, int16_t y0, uint16_t width, color_t color);
+hagl_draw_hline_xyw(void const *surface, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color);
 
 /**
  * Draw a horizontal line
@@ -73,7 +73,7 @@ hagl_draw_hline_xyw(void const *_surface, int16_t x0, int16_t y0, uint16_t width
  */
 
 static inline void
-hagl_draw_hline_xyx(void const *_surface, int16_t x0, int16_t y0, int16_t x1, color_t color)
+hagl_draw_hline_xyx(void const *surface, int16_t x0, int16_t y0, int16_t x1, hagl_color_t color)
 {
     hagl_draw_hline_xyw(_surface, x0, y0, abs(x1 - x0) + 1, color);
 }
@@ -91,7 +91,7 @@ hagl_draw_hline_xyx(void const *_surface, int16_t x0, int16_t y0, int16_t x1, co
  */
 
 static inline void
-hagl_draw_hline(void const *_surface, int16_t x0, int16_t y0, uint16_t width, color_t color)
+hagl_draw_hline(void const *surface, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color)
 {
     hagl_draw_hline_xyw(_surface, x0, y0, width, color);
 }

@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/hline.h"
 
 void
-hagl_draw_ellipse(void const *_surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color)
+hagl_draw_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, hagl_color_t color)
 {
     int16_t wx, wy;
     int32_t xa, ya;
@@ -110,7 +110,7 @@ hagl_draw_ellipse(void const *_surface, int16_t x0, int16_t y0, int16_t a, int16
 }
 
 void
-hagl_fill_ellipse(void const *_surface, int16_t x0, int16_t y0, int16_t a, int16_t b, color_t color)
+hagl_fill_ellipse(void const *surface, int16_t x0, int16_t y0, int16_t a, int16_t b, hagl_color_t color)
 {
     int16_t wx, wy;
     int32_t xa, ya;

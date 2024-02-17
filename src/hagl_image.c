@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -74,9 +74,9 @@ tjpgd_data_writer(JDEC *decoder, void *bitmap, JRECT *rectangle)
     hagl_bitmap_t block = {
         .width = width,
         .height = height,
-        .depth = hagl_display_depth,
-        .pitch = width * (hagl_display_depth / 8),
-        .size =  width * (hagl_display_depth / 8) * height,
+        .depth = device->surface->depth,
+        .pitch = width * (device->surface->depth / 8),
+        .size =  width * (device->surface->depth / 8) * height,
         .buffer = (uint8_t *)bitmap
     };
 

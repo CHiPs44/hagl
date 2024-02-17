@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -42,46 +42,39 @@ SPDX-License-Identifier: MIT
 #include <stdio.h>
 #include "hagl_hal.h"
 
-/* Get bitmap size in bytes. */
-uint32_t
-bitmap_size(hagl_bitmap_t *bitmap)
-{
-    return bitmap->width * (bitmap->depth / 8) * bitmap->height;
-};
-
 static void
-put_pixel(void *_bitmap, int16_t x0, int16_t y0, color_t color)
+put_pixel(void *_bitmap, int16_t x0, int16_t y0, hagl_color_t color)
 {
     hagl_bitmap_t *bitmap = _bitmap;
 
-    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     *ptr = color;
 }
 
-static color_t
+static hagl_color_t
 get_pixel(void *_bitmap, int16_t x0, int16_t y0)
 {
     hagl_bitmap_t *bitmap = _bitmap;
-    return *(color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    return *(hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
 }
 
 void
-hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, color_t color)
+hline(void *_bitmap, int16_t x0, int16_t y0, uint16_t width, hagl_color_t color)
 {
     hagl_bitmap_t *bitmap = _bitmap;
 
-    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     for (uint16_t x = 0; x < width; x++) {
         *ptr++ = color;
     }
 }
 
 void
-vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, color_t color)
+vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color)
 {
     hagl_bitmap_t *bitmap = _bitmap;
 
-    color_t *ptr = (color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     for (uint16_t y = 0; y < height; y++) {
         *ptr = color;
         ptr += bitmap->pitch / (bitmap->depth / 8);
@@ -233,11 +226,15 @@ scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, voi
 
 /* Initialise bitmap with given buffer. */
 void
-bitmap_init(hagl_bitmap_t *bitmap, uint8_t *buffer)
+hagl_bitmap_init(hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t depth, void *buffer)
 {
+    bitmap->width = width;
+    bitmap->height = height;
+    bitmap->depth = depth;
+    bitmap->buffer = (uint8_t *) buffer;
+
     bitmap->pitch = bitmap->width * (bitmap->depth / 8);
     bitmap->size = bitmap->pitch * bitmap->height;
-    bitmap->buffer = buffer;
 
     bitmap->clip.x0 = 0;
     bitmap->clip.y0 = 0;

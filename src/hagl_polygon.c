@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -36,11 +36,12 @@ SPDX-License-Identifier: MIT
 
 #include "hagl/surface.h"
 #include "hagl/color.h"
+#include "hagl/surface.h"
 #include "hagl/line.h"
 #include "hagl/hline.h"
 
 void
-hagl_draw_polygon(void const *_surface, int16_t amount, int16_t *vertices, color_t color)
+hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, hagl_color_t color)
 {
 
     for(int16_t i = 0; i < amount - 1; i++) {
@@ -65,7 +66,7 @@ hagl_draw_polygon(void const *_surface, int16_t amount, int16_t *vertices, color
 
 /* Adapted from  http://alienryderflex.com/polygon_fill/ */
 void
-hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, color_t color)
+hagl_fill_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_color_t color)
 {
     const hagl_surface_t *surface = _surface;
     uint16_t nodes[64];

@@ -3,7 +3,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -55,7 +55,7 @@ extern "C" {
  * @param color
  */
 void
-hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color);
+hagl_put_pixel(void const *surface, int16_t x0, int16_t y0, hagl_color_t color);
 
 /**
  * Get a single pixel
@@ -68,8 +68,8 @@ hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color);
  * @param y0
  * @return color at the given location
  */
-color_t
-hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0);
+hagl_color_t
+hagl_get_pixel(void const *surface, int16_t x0, int16_t y0);
 
 #ifdef __cplusplus
 }

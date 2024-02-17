@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/surface.h"
 
 void
-hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color)
+hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, hagl_color_t color)
 {
     const hagl_surface_t *surface = _surface;
 
@@ -56,7 +56,7 @@ hagl_put_pixel(void const *_surface, int16_t x0, int16_t y0, color_t color)
     surface->put_pixel(&surface, x0, y0, color);
 }
 
-color_t
+hagl_color_t
 hagl_get_pixel(void const *_surface, int16_t x0, int16_t y0)
 {
     const hagl_surface_t *surface = _surface;

@@ -2,7 +2,7 @@
 
 MIT License
 
-Copyright (c) 2018-2022 Mika Tuupola
+Copyright (c) 2018-2023 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/hline.h"
 
 void
-hagl_draw_circle(void const *_surface, int16_t xc, int16_t yc, int16_t r, color_t color)
+hagl_draw_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, hagl_color_t color)
 {
     int16_t x = 0;
     int16_t y = r;
@@ -55,13 +55,13 @@ hagl_draw_circle(void const *_surface, int16_t xc, int16_t yc, int16_t r, color_
     hagl_put_pixel(_surface, xc - y, yc - x, color);
 
     while (y >= x) {
-        x++;
-
         if (d > 0) {
-            y--;
             d = d + 4 * (x - y) + 10;
+            y--;
+            x++;
         } else {
             d = d + 4 * x + 6;
+            x++;
         }
 
         hagl_put_pixel(_surface, xc + x, yc + y, color);
@@ -76,24 +76,25 @@ hagl_draw_circle(void const *_surface, int16_t xc, int16_t yc, int16_t r, color_
 }
 
 void
-hagl_fill_circle(void const *_surface, int16_t x0, int16_t y0, int16_t r, color_t color)
+hagl_fill_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, hagl_color_t color)
 {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        hagl_draw_hline(_surface, x0 - x, y0 + y, x * 2, color);
-        hagl_draw_hline(_surface, x0 - x, y0 - y, x * 2, color);
-        hagl_draw_hline(_surface, x0 - y, y0 + x, y * 2, color);
-        hagl_draw_hline(_surface, x0 - y, y0 - x, y * 2, color);
-        x++;
+        hagl_draw_hline(surface, x0 - x, y0 + y, x * 2, color);
+        hagl_draw_hline(surface, x0 - x, y0 - y, x * 2, color);
+        hagl_draw_hline(surface, x0 - y, y0 + x, y * 2, color);
+        hagl_draw_hline(surface, x0 - y, y0 - x, y * 2, color);
 
-        if (d > 0) {
-            y--;
-            d = d + 4 * (x - y) + 10;
-        } else {
+        if (d <= 0) {
             d = d + 4 * x + 6;
+            x++;
+        } else {
+            d = d + 4 * (x - y) + 10;
+            x++;
+            y--;
         }
     }
 }

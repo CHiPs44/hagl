@@ -2,7 +2,27 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## [0.6.0-dev](https://github.com/tuupola/hagl/compare/0.5.0...master)
+## [0.7.0](https://github.com/tuupola/hagl/compare/0.6.0...0.7.0) - 2023-03-19
+
+### Changed
+- Rename `bitmap.c` to `hagl_bitmap.c` ([#100](https://github.com/tuupola/hagl/pull/100)).
+- Rename `color_t` to `hagl_color_t` ([#104](https://github.com/tuupola/hagl/pull/104)).
+- Initialize character buffer only when used and move it to heap ([#101](https://github.com/tuupola/hagl/pull/101), [#44](https://github.com/tuupola/hagl/issues/44)).
+
+### Fixed
+- Overflow bug when resizing big bitmaps ([#102](https://github.com/tuupola/hagl/pull/102), [#49](https://github.com/tuupola/hagl/issues/49)) .
+- Circle rendering was slightly malformed ([#106](https://github.com/tuupola/hagl/pull/106), [#109](https://github.com/tuupola/hagl/pull/109)) .
+- Both horizontal and vertical lines were one pixel too short ([#110](https://github.com/tuupola/hagl/pull/110), [#111](https://github.com/tuupola/hagl/pull/111)).
+
+### Added
+- New `hagl_bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
+
+### Removed
+- Legacy `bitmap_init()` function ([#98](https://github.com/tuupola/hagl/pull/98)).
+- Legacy `bitmap_size()` function ([#99](https://github.com/tuupola/hagl/pull/99)).
+
+
+## [0.6.0](https://github.com/tuupola/hagl/compare/0.5.0...0.6.0) - 2023-03-04
 
 ### Changed
 - You must now pass drawing surface to all drawing functions ([#65](https://github.com/tuupola/hagl/pull/65)).
@@ -17,6 +37,7 @@ All notable changes to this project will be documented in this file, in reverse 
 ### Removed
 
 - Remove `hagl_clear_clip_window()` ([#88](https://github.com/tuupola/hagl/pull/88)).
+- Internal use of `DISPLAY_*` defines ([#94](https://github.com/tuupola/hagl/pull/94)).
 
 
 ### Added
@@ -27,7 +48,7 @@ All notable changes to this project will be documented in this file, in reverse 
     fps_update(&fps);
     fps_reset(&fps);
     ```
-- Possibility to use multiple aps counter ([#69](https://github.com/tuupola/hagl/pull/70)).
+- Possibility to use multiple aps counters ([#69](https://github.com/tuupola/hagl/pull/70)).
     ```c
     aps_instance_t aps;
     aps_init(&aps);
