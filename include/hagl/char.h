@@ -47,7 +47,7 @@ extern "C" {
 typedef enum _hagl_char_mode_t {
     HAGL_CHAR_MODE_OPAQUE = 0x00,
     HAGL_CHAR_MODE_REVERSE = 0x01,
-    // HAGL_CHAR_MODE_TRANSPARENT = 0x02,
+    HAGL_CHAR_MODE_TRANSPARENT = 0x02
 } hagl_char_mode_t;
 
 typedef struct _hagl_char_style_t {
@@ -81,6 +81,42 @@ uint8_t
 hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font);
 
 /**
+ * Draw a single character, styled version
+ *
+ * Output will be clipped to the current clip window. Library itself
+ * includes only a couple of fonts. You can find more fonts at:
+ *
+ * https://github.com/tuupola/embedded-fonts
+ *
+ * @param _surface
+ * @param code  unicode code point
+ * @param x0
+ * @param y0
+ * @param style
+ * @return width of the drawn character
+ */
+uint8_t
+hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style);
+
+/**
+ * Draw a single character, styled version
+ *
+ * Output will be clipped to the current clip window. Library itself
+ * includes only a couple of fonts. You can find more fonts at:
+ *
+ * https://github.com/tuupola/embedded-fonts
+ *
+ * @param _surface
+ * @param code  unicode code point
+ * @param x0
+ * @param y0
+ * @param style
+ * @return width of the drawn character
+ */
+uint8_t
+hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style);
+
+/**
  * Draw a string
  *
  * Output will be clipped to the current clip window. Library itself
@@ -98,6 +134,42 @@ hagl_put_char(void const *surface, wchar_t code, int16_t x0, int16_t y0, hagl_co
  */
 uint16_t
 hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font);
+
+/**
+ * Draw a string, styled version
+ *
+ * Output will be clipped to the current clip window. Library itself
+ * includes only a couple of fonts. You can find more fonts at:
+ *
+ * https://github.com/tuupola/embedded-fonts
+ *
+ * @param _surface
+ * @param str pointer to an wide char string
+ * @param x0
+ * @param y0
+ * @param style
+ * @return width of the drawn string
+ */
+uint16_t
+hagl_put_text_styled(void const *_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style);
+
+/**
+ * Draw a string, styled version
+ *
+ * Output will be clipped to the current clip window. Library itself
+ * includes only a couple of fonts. You can find more fonts at:
+ *
+ * https://github.com/tuupola/embedded-fonts
+ *
+ * @param _surface
+ * @param str pointer to an wide char string
+ * @param x0
+ * @param y0
+ * @param style
+ * @return width of the drawn string
+ */
+uint16_t
+hagl_put_text_styled(void const *_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style);
 
 /**
  * Extract a glyph into a bitmap

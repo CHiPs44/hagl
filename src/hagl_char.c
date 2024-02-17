@@ -54,7 +54,7 @@ hagl_get_glyph(void const *_surface, wchar_t code, hagl_color_t color, hagl_bitm
     bitmap->depth = surface->depth;
     bitmap->width = glyph.width;
     bitmap->height = glyph.height;
-    bitmap->pitch = bitmap->width * (bitmap->depth / 8);
+    bitmap->pitch = bitmap->width * bitmap->depth / 8;
     bitmap->size = bitmap->pitch * bitmap->height;
 
     hagl_color_t *ptr = (hagl_color_t *) bitmap->buffer;
@@ -94,16 +94,17 @@ hagl_get_char_buffer(void const *_surface)
 }
 
 uint8_t
-hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, hagl_color_t color, const uint8_t *font)
+hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0, const hagl_char_style_t *style)
 {
     static uint8_t *buffer = NULL;
     const hagl_surface_t *surface = _surface;
     uint8_t set, status;
     hagl_bitmap_t bitmap;
     fontx_glyph_t glyph;
-    bool reverse;
-    hagl_color_t background_color;
-    hagl_color_t foreground_color;
+    bool         reverse           = style->mode & HAGL_CHAR_MODE_REVERSE ? true : false;
+    hagl_color_t foreground_color  = reverse ? style->background_color : style->foreground_color;
+    hagl_color_t background_color  = reverse ? style->foreground_color : style->background_color;
+    hagl_color_t transparent_color = foreground_color == 0 ? 1 : 0;
 
     status = fontx_glyph(&glyph, code, style->font);
     if (0 != status) {
@@ -116,16 +117,24 @@ hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, hagl_c
     }
 
     hagl_bitmap_init(&bitmap,  glyph.width, glyph.height, surface->depth, (uint8_t *)buffer);
-
     hagl_color_t *ptr = (hagl_color_t *) bitmap.buffer;
 
     for (uint8_t y = 0; y < glyph.height; y++) {
         for (uint8_t x = 0; x < glyph.width; x++) {
             set = *(glyph.buffer + x / 8) & (0x80 >> (x % 8));
-            if (set) {
-                *ptr = foreground_color;
+            if (style->mode & HAGL_CHAR_MODE_TRANSPARENT)
+            {
+                if (set) {
+                    *ptr = foreground_color;
+                } else {
+                    *ptr = transparent_color;
+                }
             } else {
-                *ptr = background_color;
+                if (set) {
+                    *ptr = foreground_color;
+                } else {
+                    *ptr = background_color;
+                }
             }
             ptr++;
         }
@@ -136,16 +145,33 @@ hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, hagl_c
         style->scale_x_numerator <= 1 && style->scale_x_denominator <= 1 
         && style->scale_y_numerator <= 1 && style->scale_y_denominator <= 1
     ) {
-        hagl_blit(_surface, x0, y0, &bitmap);
+        if (style->mode & HAGL_CHAR_MODE_TRANSPARENT)
+        {
+            hagl_blit_transparent(_surface, x0, y0, &bitmap, transparent_color);
+        } else {
+            hagl_blit(_surface, x0, y0, &bitmap);
+        }
         return bitmap.width;
     } else {
-        hagl_blit_xywh(
-            _surface, 
-            x0, y0, 
-            bitmap.width  * style->scale_x_numerator / style->scale_x_denominator, 
-            bitmap.height * style->scale_y_numerator / style->scale_y_denominator, 
-            &bitmap
-        );
+        if (style->mode & HAGL_CHAR_MODE_TRANSPARENT)
+        {
+            hagl_blit_xywh_transparent(
+                _surface, 
+                x0, y0, 
+                bitmap.width  * style->scale_x_numerator / style->scale_x_denominator, 
+                bitmap.height * style->scale_y_numerator / style->scale_y_denominator, 
+                &bitmap,
+                transparent_color
+            );
+        } else {
+            hagl_blit_xywh(
+                _surface, 
+                x0, y0, 
+                bitmap.width  * style->scale_x_numerator / style->scale_x_denominator, 
+                bitmap.height * style->scale_y_numerator / style->scale_y_denominator, 
+                &bitmap
+            );
+        }
         return bitmap.width * style->scale_x_numerator / style->scale_x_denominator;
     }
 }
@@ -163,13 +189,14 @@ hagl_put_char(void const *_surface, wchar_t code, int16_t x0, int16_t y0, hagl_c
 }
 
 uint16_t
-hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, hagl_color_t color, const unsigned char *font)
+hagl_put_text_styled(void const *_surface, const wchar_t *str, int16_t x0, int16_t y0, const hagl_char_style_t *style)
 {
     wchar_t temp;
     uint8_t status;
     uint16_t original = x0;
     fontx_meta_t meta;
 
+    status = fontx_meta(&meta, style->font);
     status = fontx_meta(&meta, style->font);
     if (0 != status) {
         return 0;
@@ -185,6 +212,7 @@ hagl_put_text(void const *surface, const wchar_t *str, int16_t x0, int16_t y0, h
         }
     }
 
+    /* NB: result is junk if text wrapped through CR or LF */
     /* NB: result is junk if text wrapped through CR or LF */
     return x0 - original;
 }

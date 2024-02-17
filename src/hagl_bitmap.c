@@ -32,14 +32,13 @@ SPDX-License-Identifier: MIT
 
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
 
 #include "hagl/bitmap.h"
-
-#include <stdio.h>
 #include "hagl_hal.h"
 
 static void
@@ -47,7 +46,7 @@ put_pixel(void *_bitmap, int16_t x0, int16_t y0, hagl_color_t color)
 {
     hagl_bitmap_t *bitmap = _bitmap;
 
-    hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
     *ptr = color;
 }
 
@@ -55,7 +54,7 @@ static hagl_color_t
 get_pixel(void *_bitmap, int16_t x0, int16_t y0)
 {
     hagl_bitmap_t *bitmap = _bitmap;
-    return *(hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
+    return *(hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth * x0 / 8));
 }
 
 void
@@ -77,14 +76,13 @@ vline(void *_bitmap, int16_t x0, int16_t y0, uint16_t height, hagl_color_t color
     hagl_color_t *ptr = (hagl_color_t *) (bitmap->buffer + bitmap->pitch * y0 + (bitmap->depth / 8) * x0);
     for (uint16_t y = 0; y < height; y++) {
         *ptr = color;
-        ptr += bitmap->pitch / (bitmap->depth / 8);
+        ptr += bitmap->pitch / bitmap->depth / 8;
     }
 }
 
 /*
- * Blit source bitmap to a destination bitmap->
+ * Blit source bitmap to a destination bitmap
  */
-
 static void
 blit(void *_dst, int16_t x0, int16_t y0, void *_src)
 {
@@ -130,8 +128,8 @@ blit(void *_dst, int16_t x0, int16_t y0, void *_src)
         return;
     }
 
-    uint8_t *dstptr = (uint8_t *) (dst->buffer + (dst->pitch * y0) + ((dst->depth / 8) * x0));
-    uint8_t *srcptr = (uint8_t *) (src->buffer + (src->pitch * y1) + ((dst->depth / 8) * x1));
+    uint8_t *dstptr = (uint8_t *) (dst->buffer + (dst->pitch * y0) + (dst->depth * x0 / 8));
+    uint8_t *srcptr = (uint8_t *) (src->buffer + (src->pitch * y1) + (dst->depth * x1 / 8));
 
     /* Bytes per pixel. */
     uint8_t bytes = dst->depth / 8;
@@ -199,7 +197,7 @@ scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, voi
     /* If sentence here is not the most elegant thing, but makes */
     /* the pointer maths much more easy to read. */
     if (2 == bytes) {
-        uint16_t *dstptr = (uint16_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
+        uint16_t *dstptr = (uint16_t *) (dst->buffer + dst->pitch * y0 + (dst->depth * x0 / 8));
         uint16_t *srcptr = (uint16_t *) src->buffer;
         for (uint16_t y = 0; y < dsth; y++) {
             for (uint16_t x = 0; x < dstw; x++) {
@@ -211,7 +209,7 @@ scale_blit(void *_dst, int16_t x0, int16_t y0, uint16_t dstw, uint16_t dsth, voi
         }
     } else {
         /* Assume 1 byte per pixel. */
-        uint8_t *dstptr = (uint8_t *) (dst->buffer + dst->pitch * y0 + (dst->depth / 8) * x0);
+        uint8_t *dstptr = (uint8_t *) (dst->buffer + dst->pitch * y0 + (dst->depth * x0 / 8));
         uint8_t *srcptr = (uint8_t *) src->buffer;
         for (uint16_t y = 0; y < dsth; y++) {
             for (uint16_t x = 0; x < dstw; x++) {
@@ -233,7 +231,7 @@ hagl_bitmap_init(hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t 
     bitmap->depth = depth;
     bitmap->buffer = (uint8_t *) buffer;
 
-    bitmap->pitch = bitmap->width * (bitmap->depth / 8);
+    bitmap->pitch = bitmap->width * bitmap->depth / 8;
     bitmap->size = bitmap->pitch * bitmap->height;
 
     bitmap->clip.x0 = 0;
@@ -245,6 +243,10 @@ hagl_bitmap_init(hagl_bitmap_t *bitmap, int16_t width, uint16_t height, uint8_t 
     bitmap->get_pixel = get_pixel;
     bitmap->hline = hline;
     bitmap->vline = vline;
-    bitmap->blit = blit;
-    bitmap->scale_blit = scale_blit;
+    /* HAGL provided implementation are compatible with 8 or 16 bits depth only for now */
+    bitmap->blit = 8==depth || 16==depth ? blit : NULL;
+    bitmap->scale_blit = 8==depth || 16==depth ? scale_blit : NULL;
+    /* No HAGL provided implementation */
+    bitmap->blit_alpha = NULL;
+    bitmap->scale_blit_alpha = NULL;
 }
