@@ -34,14 +34,13 @@ SPDX-License-Identifier: MIT
 
 #include <stdint.h>
 
-#include "hagl/surface.h"
 #include "hagl/color.h"
 #include "hagl/surface.h"
 #include "hagl/line.h"
 #include "hagl/hline.h"
 
 void
-hagl_draw_polygon(void const *surface, int16_t amount, int16_t *vertices, hagl_color_t color)
+hagl_draw_polygon(void const *_surface, int16_t amount, int16_t *vertices, hagl_color_t color)
 {
 
     for(int16_t i = 0; i < amount - 1; i++) {

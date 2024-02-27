@@ -39,7 +39,7 @@ SPDX-License-Identifier: MIT
 #include "hagl/hline.h"
 
 void
-hagl_draw_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, hagl_color_t color)
+hagl_draw_circle(void const *_surface, int16_t xc, int16_t yc, int16_t r, hagl_color_t color)
 {
     int16_t x = 0;
     int16_t y = r;
@@ -76,17 +76,17 @@ hagl_draw_circle(void const *surface, int16_t xc, int16_t yc, int16_t r, hagl_co
 }
 
 void
-hagl_fill_circle(void const *surface, int16_t x0, int16_t y0, int16_t r, hagl_color_t color)
+hagl_fill_circle(void const *_surface, int16_t x0, int16_t y0, int16_t r, hagl_color_t color)
 {
     int16_t x = 0;
     int16_t y = r;
     int16_t d = 3 - 2 * r;
 
     while (y >= x) {
-        hagl_draw_hline(surface, x0 - x, y0 + y, x * 2, color);
-        hagl_draw_hline(surface, x0 - x, y0 - y, x * 2, color);
-        hagl_draw_hline(surface, x0 - y, y0 + x, y * 2, color);
-        hagl_draw_hline(surface, x0 - y, y0 - x, y * 2, color);
+        hagl_draw_hline(_surface, x0 - x, y0 + y, x * 2, color);
+        hagl_draw_hline(_surface, x0 - x, y0 - y, x * 2, color);
+        hagl_draw_hline(_surface, x0 - y, y0 + x, y * 2, color);
+        hagl_draw_hline(_surface, x0 - y, y0 - x, y * 2, color);
 
         if (d <= 0) {
             d = d + 4 * x + 6;
