@@ -90,7 +90,7 @@ hagl_get_char_buffer(void const *_surface)
         buffer_size = size;
     }
 
-    return buffer; 
+    return buffer;
 }
 
 uint8_t
@@ -142,7 +142,7 @@ hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0,
     }
 
     if (
-        style->scale_x_numerator <= 1 && style->scale_x_denominator <= 1 
+        style->scale_x_numerator <= 1 && style->scale_x_denominator <= 1
         && style->scale_y_numerator <= 1 && style->scale_y_denominator <= 1
     ) {
         if (style->mode & HAGL_CHAR_MODE_TRANSPARENT)
@@ -156,19 +156,19 @@ hagl_put_char_styled(void const *_surface, wchar_t code, int16_t x0, int16_t y0,
         if (style->mode & HAGL_CHAR_MODE_TRANSPARENT)
         {
             hagl_blit_xywh_transparent(
-                _surface, 
-                x0, y0, 
-                bitmap.width  * style->scale_x_numerator / style->scale_x_denominator, 
-                bitmap.height * style->scale_y_numerator / style->scale_y_denominator, 
+                _surface,
+                x0, y0,
+                bitmap.width  * style->scale_x_numerator / style->scale_x_denominator,
+                bitmap.height * style->scale_y_numerator / style->scale_y_denominator,
                 &bitmap,
                 transparent_color
             );
         } else {
             hagl_blit_xywh(
-                _surface, 
-                x0, y0, 
-                bitmap.width  * style->scale_x_numerator / style->scale_x_denominator, 
-                bitmap.height * style->scale_y_numerator / style->scale_y_denominator, 
+                _surface,
+                x0, y0,
+                bitmap.width  * style->scale_x_numerator / style->scale_x_denominator,
+                bitmap.height * style->scale_y_numerator / style->scale_y_denominator,
                 &bitmap
             );
         }
